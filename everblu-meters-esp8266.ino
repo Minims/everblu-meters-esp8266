@@ -2,7 +2,7 @@
 
 #include "everblu_meters.h"
 
-// Project source : 
+// Project source :
 // http://www.lamaisonsimon.fr/wiki/doku.php?id=maison2:compteur_d_eau:compteur_d_eau
 
 // Require EspMQTTClient library (by Patrick Lapointe) version 1.13.3
@@ -17,19 +17,18 @@
 #define LED_BUILTIN 2
 #endif
 
-
 EspMQTTClient mqtt(
-  "MyESSID",            // Your Wifi SSID
-  "MyWiFiKey",          // Your WiFi key
-  "mqtt.server.com",    // MQTT Broker server ip
-  "MQTTUsername",       // Can be omitted if not needed
-  "MQTTPassword",       // Can be omitted if not needed
-  "EverblueCyble",      // Client name that uniquely identify your device
-  1883                  // MQTT Broker server port
+    "MyESSID",         // Your Wifi SSID
+    "MyWiFiKey",       // Your WiFi key
+    "mqtt.server.com", // MQTT Broker server ip
+    "MQTTUsername",    // Can be omitted if not needed
+    "MQTTPassword",    // Can be omitted if not needed
+    "EverblueCyble",   // Client name that uniquely identify your device
+    1883               // MQTT Broker server port
 );
 
-char *jsonTemplate = 
-"{                    \
+char *jsonTemplate =
+    "{                    \
 \"liters\": %d,       \
 \"counter\" : %d,     \
 \"battery\" : %d,     \
@@ -49,7 +48,8 @@ void onUpdateData()
   char iso8601[128];
   strftime(iso8601, sizeof iso8601, "%FT%TZ", gmtime(&tnow));
 
-  if (meter_data.reads_counter == 0 || meter_data.liters == 0) {
+  if (meter_data.reads_counter == 0 || meter_data.liters == 0)
+  {
     Serial.println("Unable to retrieve data from meter. Retry later...");
 
     // Call back this function in 10 sec (in miliseconds)
@@ -68,15 +68,14 @@ void onUpdateData()
   mqtt.publish("everblu/cyble/counter", String(meter_data.reads_counter, DEC), true);
   delay(50); // Do not remove
   mqtt.publish("everblu/cyble/battery", String(meter_data.battery_left, DEC), true);
-  delay(50); // Do not remove
+  delay(50);                                              // Do not remove
   mqtt.publish("everblu/cyble/timestamp", iso8601, true); // timestamp since epoch in UTC
-  delay(50); // Do not remove
+  delay(50);                                              // Do not remove
 
   char json[512];
   sprintf(json, jsonTemplate, meter_data.liters, meter_data.reads_counter, meter_data.battery_left, iso8601);
   mqtt.publish("everblu/cyble/json", json, true); // send all data as a json message
 }
-
 
 // This function calls onUpdateData() every days at 10:00am UTC
 void onScheduled()
@@ -84,9 +83,9 @@ void onScheduled()
   time_t tnow = time(nullptr);
   struct tm *ptm = gmtime(&tnow);
 
-
   // At 10:00:00am UTC
-  if (ptm->tm_hour == 10 && ptm->tm_min == 0 && ptm->tm_sec == 0) {
+  if (ptm->tm_hour == 10 && ptm->tm_min == 0 && ptm->tm_sec == 0)
+  {
 
     // Call back in 23 hours
     mqtt.executeDelayed(1000 * 60 * 60 * 23, onScheduled);
@@ -104,9 +103,8 @@ void onScheduled()
   mqtt.executeDelayed(500, onScheduled);
 }
 
-
 String jsonDiscoveryDevice1(
-"{ \
+    "{ \
   \"name\": \"Compteur Eau Index\", \
   \"unique_id\": \"water_meter_value\",\
   \"object_id\": \"water_meter_value\",\
@@ -128,7 +126,7 @@ String jsonDiscoveryDevice1(
 }");
 
 String jsonDiscoveryDevice2(
-"{ \
+    "{ \
   \"name\": \"Compteur Eau Batterie\", \
   \"unique_id\": \"water_meter_battery\",\
   \"object_id\": \"water_meter_battery\",\
@@ -149,7 +147,7 @@ String jsonDiscoveryDevice2(
 }");
 
 String jsonDiscoveryDevice3(
-"{ \
+    "{ \
   \"name\": \"Compteur Eau Compteur\", \
   \"unique_id\": \"water_meter_counter\",\
   \"object_id\": \"water_meter_counter\",\
@@ -167,7 +165,7 @@ String jsonDiscoveryDevice3(
 }");
 
 String jsonDiscoveryDevice4(
-  "{ \
+    "{ \
   \"name\": \"Compteur Eau Timestamp\", \
   \"unique_id\": \"water_meter_timestamp\",\
   \"object_id\": \"water_meter_timestamp\",\
@@ -192,11 +190,9 @@ void onConnectionEstablished()
   Serial.println("> Configure time from NTP server.");
   configTzTime("UTC0", "pool.ntp.org");
 
-
-
-
   Serial.println("> Configure Arduino OTA flash.");
-  ArduinoOTA.onStart([]() {
+  ArduinoOTA.onStart([]()
+                     {
     String type;
     if (ArduinoOTA.getCommand() == U_FLASH) {
       type = "sketch";
@@ -205,15 +201,13 @@ void onConnectionEstablished()
       type = "filesystem";
     }
     // NOTE: if updating FS this would be the place to unmount FS using FS.end()
-    Serial.println("Start updating " + type);
-  });
-  ArduinoOTA.onEnd([]() {
-    Serial.println("\nEnd updating.");
-  });
-  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    Serial.printf("%u%%\r\n", (progress / (total / 100)));
-  });
-  ArduinoOTA.onError([](ota_error_t error) {
+    Serial.println("Start updating " + type); });
+  ArduinoOTA.onEnd([]()
+                   { Serial.println("\nEnd updating."); });
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
+                        { Serial.printf("%u%%\r\n", (progress / (total / 100))); });
+  ArduinoOTA.onError([](ota_error_t error)
+                     {
     Serial.printf("Error[%u]: ", error);
     if (error == OTA_AUTH_ERROR) {
       Serial.println("Auth Failed");
@@ -229,22 +223,19 @@ void onConnectionEstablished()
     }
     else if (error == OTA_END_ERROR) {
       Serial.println("End Failed");
-    }
-  });
+    } });
   ArduinoOTA.setHostname("EVERBLUREADER");
   ArduinoOTA.begin();
 
-  mqtt.subscribe("everblu/cyble/trigger", [](const String& message) {
+  mqtt.subscribe("everblu/cyble/trigger", [](const String &message)
+                 {
     if (message.length() > 0) {
 
       Serial.println("Update data from meter from MQTT trigger");
 
       _retry = 0;
       onUpdateData();
-    }
-  });
-
-
+    } });
 
   Serial.println("> Send MQTT config for HA.");
   // Auto discovery
@@ -270,7 +261,7 @@ void setup()
   digitalWrite(LED_BUILTIN, HIGH); // turned off
 
   mqtt.setMaxPacketSize(1024);
-  //mqtt.enableDebuggingMessages(true);
+  // mqtt.enableDebuggingMessages(true);
 
   /*
   // Use this piece of code to find the right frequency.
@@ -293,8 +284,6 @@ void setup()
   }
   */
 
-
-
   cc1101_init(FREQUENCY);
 
   /*
@@ -308,6 +297,6 @@ void setup()
 
 void loop()
 {
-  mqtt.loop(); 
+  mqtt.loop();
   ArduinoOTA.handle();
 }
