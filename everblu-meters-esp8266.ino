@@ -105,7 +105,7 @@ void onScheduled()
 
 String jsonDiscoveryDevice1(
     "{ \
-  \"name\": \"Compteur Eau Index\", \
+  \"name\": \"Index\", \
   \"unique_id\": \"water_meter_value\",\
   \"object_id\": \"water_meter_value\",\
   \"icon\": \"mdi:water\",\
@@ -127,7 +127,7 @@ String jsonDiscoveryDevice1(
 
 String jsonDiscoveryDevice2(
     "{ \
-  \"name\": \"Compteur Eau Batterie\", \
+  \"name\": \"Batterie\", \
   \"unique_id\": \"water_meter_battery\",\
   \"object_id\": \"water_meter_battery\",\
   \"device_class\": \"battery\",\
@@ -148,7 +148,7 @@ String jsonDiscoveryDevice2(
 
 String jsonDiscoveryDevice3(
     "{ \
-  \"name\": \"Compteur Eau Compteur\", \
+  \"name\": \"Compteur\", \
   \"unique_id\": \"water_meter_counter\",\
   \"object_id\": \"water_meter_counter\",\
   \"icon\": \"mdi:counter\",\
@@ -166,7 +166,7 @@ String jsonDiscoveryDevice3(
 
 String jsonDiscoveryDevice4(
     "{ \
-  \"name\": \"Compteur Eau Timestamp\", \
+  \"name\": \"Timestamp\", \
   \"unique_id\": \"water_meter_timestamp\",\
   \"object_id\": \"water_meter_timestamp\",\
   \"device_class\": \"timestamp\",\
