@@ -68,9 +68,13 @@ void onUpdateData()
   mqtt.publish("everblu/cyble/counter", String(meter_data.reads_counter, DEC), true);
   delay(50); // Do not remove
   mqtt.publish("everblu/cyble/battery", String(meter_data.battery_left, DEC), true);
-  delay(50);                                              // Do not remove
+  delay(50);
   mqtt.publish("everblu/cyble/timestamp", iso8601, true); // timestamp since epoch in UTC
-  delay(50);                                              // Do not remove
+  delay(50);
+  mqtt.publish("everblu/cyble/start", String(meter_data.time_start, DEC), true);
+  delay(50);
+  mqtt.publish("everblu/cyble/end", String(meter_data.time_end, DEC), true);
+  delay(50); // Do not remove
 
   char json[512];
   sprintf(json, jsonTemplate, meter_data.liters, meter_data.reads_counter, meter_data.battery_left, iso8601);
